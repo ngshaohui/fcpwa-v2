@@ -1,0 +1,33 @@
+#root {
+  text-align: center;
+  width: 100vw;
+}
+
+div:has(> input):has(> datalist) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+input[type="range"] {
+  width: 100%;
+}
+
+input + datalist {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  writing-mode: vertical-lr;
+  width: 100%;
+  font-size: 2rem;
+}
+
+datalist > option {
+  padding: 0;
+}
+
+hr {
+  width: 100%;
+  margin: 1rem 0;
+}

@@ -1,0 +1,16 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  border-bottom: 1px solid #555;
+  padding: 0.5rem 0;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  cursor: pointer;
+}
+
+.icon {
+  filter: invert(1);
+}
