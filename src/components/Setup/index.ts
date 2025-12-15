@@ -1,3 +1,1 @@
-import { QuizSetup } from "./Setup";
-
-export { QuizSetup };
+export { QuizSetup } from "./Setup";

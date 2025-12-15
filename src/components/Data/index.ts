@@ -1,3 +1,1 @@
-import { DataSource } from "./DataSource";
-
-export { DataSource };
+export { DataSource } from "./DataSource";
