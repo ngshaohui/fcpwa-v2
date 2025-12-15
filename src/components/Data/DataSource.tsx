@@ -6,6 +6,7 @@ import {
 } from "@/utils/dataset";
 import styles from "./DataSource.module.css";
 import { useState } from "react";
+import { Stats } from "./Stats";
 
 const INPUT_DATASOURCE_NAME = "datasource";
 
@@ -107,6 +108,10 @@ export function DataSource() {
       <button onClick={retryAudio} disabled={!isValidUrl}>
         Retry fetch audio
       </button>
+
+      <hr />
+
+      <Stats />
     </div>
   );
 }
