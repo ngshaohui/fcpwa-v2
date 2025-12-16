@@ -23,7 +23,7 @@ function App() {
       content = <QuizSetup />;
       break;
     case "quiz":
-      content = <QuizMode quizItems={settings.quizItems} />;
+      content = <QuizMode />;
       break;
     case "settings":
       content = <DataSource />;

@@ -1,13 +1,13 @@
 import { createContext, useContext, useReducer } from "react";
 import type { Dispatch, ReactNode } from "react";
-import type { AppState, QuizItem } from "@/common/types";
+import type { AppState } from "@/common/types";
 
 type AppSettings = {
   appState: AppState;
   muteAudio: boolean;
   showTransliteration: boolean;
   showEnglish: boolean;
-  quizItems: QuizItem[];
+  numNewItems: number;
 };
 
 const DEFAULT_SETTINGS: AppSettings = {
@@ -15,7 +15,7 @@ const DEFAULT_SETTINGS: AppSettings = {
   muteAudio: false,
   showTransliteration: false,
   showEnglish: false,
-  quizItems: [],
+  numNewItems: 5,
 };
 
 type Action =
@@ -23,7 +23,7 @@ type Action =
   | { type: "SET_MUTE_AUDIO"; payload: boolean }
   | { type: "SET_SHOW_TRANSLITERATION"; payload: boolean }
   | { type: "SET_SHOW_ENGLISH"; payload: boolean }
-  | { type: "SET_QUIZ_ITEMS"; payload: QuizItem[] };
+  | { type: "SET_NEW_QUIZ"; payload: number };
 
 const SettingsContext = createContext<AppSettings>(DEFAULT_SETTINGS);
 const SettingsDispatchContext = createContext<Dispatch<Action> | null>(null);
@@ -70,10 +70,11 @@ function settingsReducer(settings: AppSettings, action: Action) {
         showEnglish: action.payload,
       };
     }
-    case "SET_QUIZ_ITEMS": {
+    case "SET_NEW_QUIZ": {
       return {
         ...settings,
-        quizItems: action.payload,
+        appState: "quiz" as AppState,
+        numNewItems: action.payload,
       };
     }
   }

@@ -1,53 +1,63 @@
-import type { QuizItem } from "@/common/types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CardFront } from "./CardFront";
 import { CardBack } from "./CardBack";
-import { update } from "@/utils/quiz";
-import { useSettingsDispatch } from "@/SettingsContext";
+import type { QuizItem } from "@/common/types";
+import { useSettings, useSettingsDispatch } from "@/SettingsContext";
+import { getNewQuizItem, getQuizItem, update } from "@/utils/quiz";
 
-interface QuizModeProps {
-  quizItems: QuizItem[];
-}
-
-export function QuizMode({ quizItems }: QuizModeProps) {
+export function QuizMode() {
+  const settings = useSettings();
   const [isFront, setIsFront] = useState<boolean>(true);
+  const [quizItem, setQuizItem] = useState<QuizItem | null>(null);
   const [idx, setIdx] = useState(0);
   const dispatch = useSettingsDispatch();
 
-  function handleFlip() {
-    if (!isFront) {
-      if (idx === quizItems.length - 1) {
+  // set first item
+  useEffect(() => {
+    (async () => {
+      const nextQuizItem =
+        idx < settings.numNewItems
+          ? await getNewQuizItem()
+          : await getQuizItem();
+      setQuizItem(nextQuizItem);
+
+      if (nextQuizItem === null) {
+        // end quiz
         dispatch({
           type: "SET_APP_STATE",
           payload: "setup",
         });
-      } else {
-        setIdx((curIdx) => curIdx + 1);
       }
+    })();
+  }, [idx, settings.numNewItems]);
+
+  async function handleFlip() {
+    if (!isFront) {
+      setIdx((curIdx) => curIdx + 1);
     }
     setIsFront((cur) => !cur);
   }
 
   function handleSetQuality(quality: number) {
-    update(quizItems[idx].practiceItem, quality);
+    if (quizItem === null) {
+      return;
+    }
+    update(quizItem.practiceItem, quality);
     handleFlip();
   }
 
-  if (quizItems.length === 0) {
+  if (quizItem === null) {
     return <div>No items to start quiz session</div>;
   }
 
   if (isFront) {
     return (
-      <CardFront
-        cueText={quizItems[idx].courseItem.cue.text}
-        flip={handleFlip}
-      />
+      <CardFront cueText={quizItem.courseItem.cue.text} flip={handleFlip} />
     );
   } else {
     return (
       <CardBack
-        courseItem={quizItems[idx].courseItem}
+        courseItem={quizItem.courseItem}
         setQuality={handleSetQuality}
       />
     );
