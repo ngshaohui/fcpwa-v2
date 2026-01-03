@@ -79,5 +79,5 @@ export async function update(practiceItem: PracticeItem, quality: number) {
     date,
   });
 
-  tx.done;
+  await tx.done;
 }
