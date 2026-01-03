@@ -10,10 +10,14 @@ export async function checkHealth(baseUrl: string): Promise<boolean> {
 
 async function fetchQuizItems(
   baseUrl: string,
-  language: string
+  language: string,
+  existing: string[]
 ): Promise<QuizItem[]> {
   const url = `${baseUrl}/${language}`;
-  const res = await fetch(url);
+  const res = await fetch(url, {
+    method: "POST",
+    body: JSON.stringify(existing),
+  });
   return (await res.json()) as QuizItem[];
 }
 
@@ -70,9 +74,19 @@ export async function saveAudioFile(itemNames: string[], items: Blob[]) {
   await tx.done;
 }
 
-// TODO: optimize by checking which ones are in store already
+async function getExistingPracticeItems(): Promise<string[]> {
+  const db = await idbDB;
+  return db.getAllKeys(StorageKeys.PracticeItems);
+}
+
 export async function fetchAndSaveData(baseUrl: string) {
-  const quizItems = await fetchQuizItems(baseUrl, "jp"); // hardcoded to jp
+  const existingPracticeItemKeys = await getExistingPracticeItems();
+
+  const quizItems = await fetchQuizItems(
+    baseUrl,
+    "jp",
+    existingPracticeItemKeys
+  ); // hardcoded to jp
   const courseItems = quizItems.map((item) => item.courseItem);
   await saveCourseItems(courseItems);
   const practiceItems = quizItems.map((item) => item.practiceItem);
@@ -103,6 +117,7 @@ export async function retryFetchAudio(baseUrl: string) {
   const tx2 = db.transaction(StorageKeys.Audio, "readonly");
   const store2 = tx2.objectStore(StorageKeys.Audio);
   const existing = await store2.getAllKeys();
+  // multiple items may share the same audio file, only want uniques
   const existingSet: Set<string> = new Set(existing);
 
   const maybeUrls: (string | null)[] = [];
