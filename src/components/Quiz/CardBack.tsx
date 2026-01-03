@@ -3,12 +3,43 @@ import { ShowCue } from "./ShowCue";
 import { ShowSentence } from "./ShowSentence";
 
 import styles from "./CardBack.module.css";
+import { useCallback, useEffect } from "react";
 
 interface RangeSliderProps {
-  pointerUpListener: (e: React.PointerEvent<HTMLInputElement>) => void;
+  selectScore: (score: number) => void;
 }
 
-function RangeSlider({ pointerUpListener }: RangeSliderProps) {
+const KeyMap: Record<string, number> = {
+  Digit0: 0,
+  Digit1: 1,
+  Digit2: 2,
+  Digit3: 3,
+  Digit4: 4,
+  Digit5: 5,
+  Digit6: 6,
+};
+
+function RangeSlider({ selectScore }: RangeSliderProps) {
+  function pointerUpListener(e: React.PointerEvent<HTMLInputElement>) {
+    const value = Number(e.currentTarget.value);
+    selectScore(value);
+  }
+  const keyDownListener = useCallback(
+    (e: KeyboardEvent) => {
+      const value = Number(KeyMap[e.code]);
+      selectScore(value);
+    },
+    [selectScore],
+  );
+
+  useEffect(() => {
+    document.addEventListener("keydown", keyDownListener);
+
+    return () => {
+      document.removeEventListener("keydown", keyDownListener);
+    };
+  }, [keyDownListener]);
+
   return (
     <div>
       <input
@@ -46,11 +77,12 @@ interface CardBackProps {
  * lifecycle for this component ends once setQuality callback is triggered
  */
 export function CardBack({ courseItem, setQuality }: CardBackProps) {
-  function pointerUpListener(e: React.PointerEvent<HTMLInputElement>) {
-    const value = Number(e.currentTarget.value);
-
+  function selectScore(score: number) {
+    if (isNaN(score)) {
+      return;
+    }
     setTimeout(() => {
-      setQuality(value); // artificial delay
+      setQuality(score); // artificial delay
     }, 200);
   }
 
@@ -60,7 +92,7 @@ export function CardBack({ courseItem, setQuality }: CardBackProps) {
         <ShowCue cue={courseItem.cue} />
         <ShowSentence sentences={courseItem.sentences} />
       </div>
-      <RangeSlider pointerUpListener={pointerUpListener} />
+      <RangeSlider selectScore={selectScore} />
     </div>
   );
 }
