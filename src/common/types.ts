@@ -49,4 +49,4 @@ export interface UserSettings {
   includeNewItems: boolean;
 }
 
-export type AppState = "setup" | "quiz" | "settings";
+export type AppState = "setup" | "quiz" | "settings" | "review";

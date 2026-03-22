@@ -5,6 +5,7 @@ import { Menubar } from "@/components/Menubar";
 import { DataSource } from "@/components/Data";
 import { QuizSetup } from "@/components/Setup";
 import { QuizMode } from "@/components/Quiz";
+import { Review } from "@/components/Review";
 
 import styles from "./App.module.css";
 import { AudioProvider } from "./AudioContext";
@@ -27,6 +28,9 @@ function App() {
       break;
     case "settings":
       content = <DataSource />;
+      break;
+    case "review":
+      content = <Review />;
       break;
     default:
       content = <p>No such page</p>;

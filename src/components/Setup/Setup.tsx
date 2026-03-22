@@ -38,6 +38,7 @@ export function QuizSetup() {
         <br />
         <button type="submit">Start quiz</button>
       </form>
+      <button onClick={() => dispatch({ type: "SET_APP_STATE", payload: "review" })}>Review</button>
     </div>
   );
 }
