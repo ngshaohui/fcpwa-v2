@@ -25,3 +25,17 @@ dist-ssr
 
 # PWA
 dev-dist/
+
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+audio/
+dataset/

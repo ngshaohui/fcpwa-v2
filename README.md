@@ -12,6 +12,26 @@ npm i
 npm run dev
 ```
 
+## Server
+
+Run server on localhost
+
+```bash
+uv run fastapi dev main.py
+```
+
+Run server on all interfaces
+
+```bash
+uv run fastapi run main.py
+```
+
+### Cloudflare tunnel
+
+```bash
+cloudflared tunnel --url http://localhost:8000
+```
+
 ## TODO
 
 - download status and progress

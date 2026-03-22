@@ -1,0 +1,11 @@
+[project]
+name = "fcpwa-v2-server"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi[standard]>=0.121.3",
+    "pydantic>=2.12.4",
+    "sqlmodel>=0.0.27",
+]
