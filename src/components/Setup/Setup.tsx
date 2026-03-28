@@ -1,3 +1,4 @@
+import { ActiveStats } from "@/components/Data/ActiveStats";
 import { useSettings, useSettingsDispatch } from "@/SettingsContext";
 import { useState } from "react";
 import styles from "./Setup.module.css";
@@ -39,6 +40,7 @@ export function QuizSetup() {
         <button type="submit">Start quiz</button>
       </form>
       <button onClick={() => dispatch({ type: "SET_APP_STATE", payload: "review" })}>Review</button>
+      <ActiveStats />
     </div>
   );
 }

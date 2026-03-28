@@ -1,4 +1,5 @@
-import { IDB_BOOL, StorageKeys } from "@/common/constants";
+import { StorageKeys } from "@/common/constants";
+import type { PracticeItem } from "@/common/types";
 import { idbDB } from "@/utils/services";
 import { useEffect, useState } from "react";
 
@@ -6,10 +7,14 @@ async function countPracticeItems(): Promise<[number, number]> {
   const db = await idbDB;
   const tx = db.transaction(StorageKeys.PracticeItems, "readonly");
   const store = tx.objectStore(StorageKeys.PracticeItems);
-  const totalCount = await store.count();
-  const index = store.index("active");
-  const activeCount = await index.count(IDB_BOOL.True);
-  return [activeCount, totalCount];
+  const items: PracticeItem[] = await store.getAll();
+  let attempted = 0;
+  for (const item of items) {
+    if (item.repetitions > 0) {
+      attempted++;
+    }
+  }
+  return [attempted, items.length];
 }
 
 async function countAudioItems() {
@@ -20,14 +25,14 @@ async function countAudioItems() {
 }
 
 export function Stats() {
-  const [activeCount, setActiveCount] = useState<number | null>(null);
+  const [attemptedCount, setAttemptedCount] = useState<number | null>(null);
   const [totalCount, setTotalCount] = useState<number | null>(null);
   const [audioCount, setAudioCount] = useState<number | null>(null);
 
   useEffect(() => {
     (async () => {
-      const [active, total] = await countPracticeItems();
-      setActiveCount(active);
+      const [attempted, total] = await countPracticeItems();
+      setAttemptedCount(attempted);
       setTotalCount(total);
       const audio = await countAudioItems();
       setAudioCount(audio);
@@ -37,7 +42,11 @@ export function Stats() {
   return (
     <div>
       <p>
-        {activeCount} Active &#40;out of {totalCount} total items&#41;
+        Progress: {attemptedCount} out of {totalCount} &#40;
+        {attemptedCount != null && totalCount
+          ? ((attemptedCount / totalCount) * 100).toFixed(2)
+          : "0.00"}
+        %&#41;
       </p>
       <p>{audioCount} Audio files</p>
     </div>
