@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 
 interface ActiveStatsData {
   active: number;
+  due: number;
   deactivated: number;
   attempted: number;
   total: number;
@@ -17,12 +18,17 @@ async function countActiveStats(): Promise<ActiveStatsData> {
   const items: PracticeItem[] = await store.getAll();
 
   let active = 0;
+  let due = 0;
   let deactivated = 0;
   let attempted = 0;
+  const now = Date.now();
 
   for (const item of items) {
     if (item.active === IDB_BOOL.True) {
       active++;
+      if (item.date <= now) {
+        due++;
+      }
     }
     if (item.repetitions > 0) {
       attempted++;
@@ -32,7 +38,7 @@ async function countActiveStats(): Promise<ActiveStatsData> {
     }
   }
 
-  return { active, deactivated, attempted, total: items.length };
+  return { active, due, deactivated, attempted, total: items.length };
 }
 
 function formatPercent(numerator: number, denominator: number): string {
@@ -56,6 +62,7 @@ export function ActiveStats() {
   return (
     <div>
       <p>Active: {stats.active}</p>
+      <p>Due: {stats.due}</p>
       <p>Deactivated: {stats.deactivated}</p>
       <p>
         Completion: {stats.attempted} out of {stats.total} &#40;
