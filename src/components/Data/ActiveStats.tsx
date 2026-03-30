@@ -49,15 +49,17 @@ function formatPercent(numerator: number, denominator: number): string {
 }
 
 export function ActiveStats() {
-  const [stats, setStats] = useState<ActiveStatsData | null>(null);
+  const [stats, setStats] = useState<ActiveStatsData>({
+    active: 0,
+    due: 0,
+    deactivated: 0,
+    attempted: 0,
+    total: 0,
+  });
 
   useEffect(() => {
     countActiveStats().then(setStats);
   }, []);
-
-  if (!stats) {
-    return null;
-  }
 
   return (
     <div>
