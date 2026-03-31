@@ -11,11 +11,16 @@ export async function getAllQuizItems(): Promise<QuizItem[]> {
   const practiceStore = tx.objectStore(StorageKeys.PracticeItems);
   const courseStore = tx.objectStore(StorageKeys.CourseItems);
 
-  const practiceItems = await practiceStore.getAll();
+  const [practiceItems, courseItems] = await Promise.all([
+    practiceStore.getAll(),
+    courseStore.getAll(),
+  ]);
+
+  const courseMap = new Map(courseItems.map((c) => [c.id, c]));
   const quizItems: QuizItem[] = [];
 
   for (const practiceItem of practiceItems) {
-    const courseItem = await courseStore.get(practiceItem.courseItemId);
+    const courseItem = courseMap.get(practiceItem.courseItemId);
     if (courseItem) {
       quizItems.push({ courseItem, practiceItem });
     }
