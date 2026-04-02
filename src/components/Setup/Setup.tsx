@@ -1,6 +1,8 @@
+import { useState } from "react";
+
 import { ActiveStats } from "@/components/Data/ActiveStats";
 import { useSettings, useSettingsDispatch } from "@/SettingsContext";
-import { useState } from "react";
+
 import styles from "./Setup.module.css";
 
 const INPUT_NEW_QUIZ_ITEMS_NAME = "new";

@@ -5,7 +5,7 @@ export function sm2(
   repetitions: number,
   easeFactor: number,
   interval: number,
-  unixTimeNow: number
+  unixTimeNow: number,
 ) {
   // ease factor
   const nextEaseFactor = getNextEaseFactor(easeFactor, quality);
@@ -14,15 +14,10 @@ export function sm2(
   const nextRepetitions = getNextRepetitions(quality, repetitions);
 
   // interval
-  const nextInterval = getNextInterval(
-    interval,
-    nextRepetitions,
-    nextEaseFactor
-  );
+  const nextInterval = getNextInterval(interval, nextRepetitions, nextEaseFactor);
 
   // next practice
-  const nextPracticeDate =
-    new Date(unixTimeNow).getTime() + MILLISECONDS_IN_DAY * nextInterval;
+  const nextPracticeDate = new Date(unixTimeNow).getTime() + MILLISECONDS_IN_DAY * nextInterval;
 
   return {
     easeFactor: nextEaseFactor,
@@ -32,10 +27,7 @@ export function sm2(
 }
 
 function getNextEaseFactor(easeFactor: number, quality: number): number {
-  return Math.max(
-    1.3,
-    easeFactor + 0.1 - (5.0 - quality) * (0.08 + (5.0 - quality) * 0.02)
-  );
+  return Math.max(1.3, easeFactor + 0.1 - (5.0 - quality) * (0.08 + (5.0 - quality) * 0.02));
 }
 
 function getNextRepetitions(quality: number, repetitions: number): number {
@@ -47,11 +39,7 @@ function getNextRepetitions(quality: number, repetitions: number): number {
 }
 
 // returns number of days
-function getNextInterval(
-  interval: number,
-  repetitions: number,
-  easeFactor: number
-): number {
+function getNextInterval(interval: number, repetitions: number, easeFactor: number): number {
   if (repetitions <= 1) {
     return 1;
   } else if (repetitions === 2) {

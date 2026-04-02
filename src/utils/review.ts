@@ -1,13 +1,11 @@
 import { IDB_BOOL, StorageKeys } from "@/common/constants";
 import type { QuizItem } from "@/common/types";
+
 import { idbDB } from "./services";
 
 export async function getAllQuizItems(): Promise<QuizItem[]> {
   const db = await idbDB;
-  const tx = db.transaction(
-    [StorageKeys.PracticeItems, StorageKeys.CourseItems],
-    "readonly",
-  );
+  const tx = db.transaction([StorageKeys.PracticeItems, StorageKeys.CourseItems], "readonly");
   const practiceStore = tx.objectStore(StorageKeys.PracticeItems);
   const courseStore = tx.objectStore(StorageKeys.CourseItems);
 
@@ -30,10 +28,7 @@ export async function getAllQuizItems(): Promise<QuizItem[]> {
   return quizItems;
 }
 
-export async function toggleActive(
-  courseItemId: string,
-  currentActive: number,
-): Promise<void> {
+export async function toggleActive(courseItemId: string, currentActive: number): Promise<void> {
   const db = await idbDB;
   const tx = db.transaction(StorageKeys.PracticeItems, "readwrite");
   const store = tx.objectStore(StorageKeys.PracticeItems);

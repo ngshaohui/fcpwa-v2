@@ -1,5 +1,6 @@
 import { createContext, useContext, useReducer } from "react";
 import type { Dispatch, ReactNode } from "react";
+
 import type { AppState } from "@/common/types";
 
 type AppSettings = {

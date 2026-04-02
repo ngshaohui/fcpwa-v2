@@ -1,7 +1,8 @@
+import { useEffect, useState } from "react";
+
 import { IDB_BOOL, StorageKeys } from "@/common/constants";
 import type { PracticeItem } from "@/common/types";
 import { idbDB } from "@/utils/services";
-import { useEffect, useState } from "react";
 
 interface ActiveStatsData {
   active: number;

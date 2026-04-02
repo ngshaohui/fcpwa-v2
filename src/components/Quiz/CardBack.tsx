@@ -1,9 +1,11 @@
+import { useCallback, useEffect } from "react";
+
 import type { CourseItem } from "@/common/types";
+
 import { ShowCue } from "./ShowCue";
 import { ShowSentence } from "./ShowSentence";
 
 import styles from "./CardBack.module.css";
-import { useCallback, useEffect } from "react";
 
 interface RangeSliderProps {
   selectScore: (score: number) => void;

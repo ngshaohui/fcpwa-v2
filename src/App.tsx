@@ -1,14 +1,14 @@
 import "./App.css";
-
-import { useSettings } from "@/SettingsContext";
-import { Menubar } from "@/components/Menubar";
 import { DataSource } from "@/components/Data";
-import { QuizSetup } from "@/components/Setup";
+import { Menubar } from "@/components/Menubar";
 import { QuizMode } from "@/components/Quiz";
 import { Review } from "@/components/Review";
+import { QuizSetup } from "@/components/Setup";
+import { useSettings } from "@/SettingsContext";
+
+import { AudioProvider } from "./AudioContext";
 
 import styles from "./App.module.css";
-import { AudioProvider } from "./AudioContext";
 
 function BottomSafeArea() {
   return <div className={styles.bottomSafeArea} />;

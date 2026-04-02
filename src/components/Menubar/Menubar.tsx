@@ -1,7 +1,7 @@
-import { useSettingsDispatch } from "@/SettingsContext";
-import styles from "./Menubar.module.css";
-
 import settingsIcon from "@/assets/tool.svg";
+import { useSettingsDispatch } from "@/SettingsContext";
+
+import styles from "./Menubar.module.css";
 
 export function Menubar() {
   const dispatch = useSettingsDispatch();

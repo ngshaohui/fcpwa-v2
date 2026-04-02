@@ -1,13 +1,14 @@
 {
   "name": "fcpwa-v2",
-  "private": true,
   "version": "0.0.0",
+  "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite",
     "dev-a": "vite --host 0.0.0.0",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
+    "format": "oxfmt --write .",
     "preview": "vite preview",
     "preview-a": "vite preview --host 0.0.0.0"
   },

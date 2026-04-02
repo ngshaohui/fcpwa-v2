@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
-import { CardFront } from "./CardFront";
-import { CardBack } from "./CardBack";
+
 import type { QuizItem } from "@/common/types";
 import { useSettings, useSettingsDispatch } from "@/SettingsContext";
 import { getNewQuizItem, getQuizItem, update } from "@/utils/quiz";
+
+import { CardBack } from "./CardBack";
+import { CardFront } from "./CardFront";
 
 export function QuizMode() {
   const settings = useSettings();
@@ -16,9 +18,7 @@ export function QuizMode() {
   useEffect(() => {
     (async () => {
       const nextQuizItem =
-        idx < settings.numNewItems
-          ? await getNewQuizItem()
-          : await getQuizItem();
+        idx < settings.numNewItems ? await getNewQuizItem() : await getQuizItem();
       setQuizItem(nextQuizItem);
 
       if (nextQuizItem === null) {
@@ -51,15 +51,8 @@ export function QuizMode() {
   }
 
   if (isFront) {
-    return (
-      <CardFront cueText={quizItem.courseItem.cue.text} flip={handleFlip} />
-    );
+    return <CardFront cueText={quizItem.courseItem.cue.text} flip={handleFlip} />;
   } else {
-    return (
-      <CardBack
-        courseItem={quizItem.courseItem}
-        setQuality={handleSetQuality}
-      />
-    );
+    return <CardBack courseItem={quizItem.courseItem} setQuality={handleSetQuality} />;
   }
 }

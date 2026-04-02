@@ -1,5 +1,6 @@
 import { IDB_BOOL, StorageKeys } from "@/common/constants";
 import type { PracticeItem, QuizItem } from "@/common/types";
+
 import { idbDB } from "./services";
 import { sm2 } from "./sm2";
 
@@ -12,7 +13,7 @@ export async function getQuizItem(): Promise<QuizItem | null> {
 
   const range = IDBKeyRange.bound(
     [IDB_BOOL.True, -Infinity], // min possible date
-    [IDB_BOOL.True, Infinity] // max possible date
+    [IDB_BOOL.True, Infinity], // max possible date
   );
 
   const item = await index.get(range);
@@ -30,7 +31,7 @@ export async function getNewQuizItem(): Promise<QuizItem | null> {
 
   const range = IDBKeyRange.bound(
     [IDB_BOOL.False, -Infinity], // min possible date
-    [IDB_BOOL.False, Infinity] // max possible date
+    [IDB_BOOL.False, Infinity], // max possible date
   );
 
   const item = await index.get(range);
@@ -42,9 +43,7 @@ export async function getNewQuizItem(): Promise<QuizItem | null> {
   return getQuizItemFromPracticeItem(activeItem);
 }
 
-async function getQuizItemFromPracticeItem(
-  item: PracticeItem
-): Promise<QuizItem> {
+async function getQuizItemFromPracticeItem(item: PracticeItem): Promise<QuizItem> {
   const db = await idbDB;
   const courseItem = await db.get(StorageKeys.CourseItems, item.courseItemId);
   if (courseItem === undefined) {
@@ -69,7 +68,7 @@ export async function update(practiceItem: PracticeItem, quality: number) {
     practiceItem.repetitions,
     practiceItem.easeFactor,
     diffDays,
-    curDate.getTime()
+    curDate.getTime(),
   );
 
   store.put({

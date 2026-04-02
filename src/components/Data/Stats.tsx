@@ -1,7 +1,8 @@
+import { useEffect, useState } from "react";
+
 import { StorageKeys } from "@/common/constants";
 import type { PracticeItem } from "@/common/types";
 import { idbDB } from "@/utils/services";
-import { useEffect, useState } from "react";
 
 async function countPracticeItems(): Promise<[number, number]> {
   const db = await idbDB;

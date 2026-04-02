@@ -1,6 +1,7 @@
 import { createContext, useRef, useEffect } from "react";
-import { idbDB } from "@/utils/services"; // your db
+
 import { StorageKeys } from "@/common/constants";
+import { idbDB } from "@/utils/services"; // your db
 
 interface AudioContextValue {
   play: (id: string) => Promise<void>;
@@ -11,13 +12,7 @@ export const AudioContext = createContext<AudioContextValue | null>(null);
 
 let lastUrl: string | null = null;
 
-export function AudioProvider({
-  children,
-  muted,
-}: {
-  children: React.ReactNode;
-  muted: boolean;
-}) {
+export function AudioProvider({ children, muted }: { children: React.ReactNode; muted: boolean }) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // create audio element exactly once
@@ -52,9 +47,5 @@ export function AudioProvider({
     }
   }
 
-  return (
-    <AudioContext.Provider value={{ play, muted }}>
-      {children}
-    </AudioContext.Provider>
-  );
+  return <AudioContext.Provider value={{ play, muted }}>{children}</AudioContext.Provider>;
 }

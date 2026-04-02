@@ -1,6 +1,8 @@
 import { useState } from "react";
+
 import type { Sentence } from "@/common/types";
 import { useAudio } from "@/hooks/useAudio";
+
 import styles from "./ShowSentence.module.css";
 
 /*

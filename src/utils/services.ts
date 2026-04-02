@@ -1,5 +1,6 @@
 import type { DBSchema } from "idb";
 import { openDB } from "idb";
+
 import { DBName, StorageKeys } from "@/common/constants";
 import type { CourseItem, PracticeItem, UserSettings } from "@/common/types";
 
@@ -54,9 +55,7 @@ export const idbDB = openDB<IDBDB>(DBName, 1, {
 
 // move this out to its own user settings file
 export async function getUserSettings(): Promise<UserSettings> {
-  const userSettings = await (
-    await idbDB
-  ).get(StorageKeys.UserSettings, StorageKeys.UserSettings);
+  const userSettings = await (await idbDB).get(StorageKeys.UserSettings, StorageKeys.UserSettings);
   if (!userSettings) {
     throw new Error("Error retrieving user settings from store");
   }

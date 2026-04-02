@@ -32,6 +32,12 @@ uv run fastapi run main.py
 cloudflared tunnel --url http://localhost:8000
 ```
 
+## Format
+
+```bash
+npm run format
+```
+
 ## TODO
 
 - download status and progress

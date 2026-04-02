@@ -1,5 +1,6 @@
 import type { Cue } from "@/common/types";
 import { useAudio } from "@/hooks/useAudio";
+
 import styles from "./ShowCue.module.css";
 
 interface ShowCueProps {

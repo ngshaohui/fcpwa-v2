@@ -1,5 +1,6 @@
 import { StorageKeys } from "@/common/constants";
 import type { CourseItem, PracticeItem, QuizItem } from "@/common/types";
+
 import { idbDB } from "./services";
 
 export async function checkHealth(baseUrl: string): Promise<boolean> {
@@ -11,7 +12,7 @@ export async function checkHealth(baseUrl: string): Promise<boolean> {
 async function fetchQuizItems(
   baseUrl: string,
   language: string,
-  existing: string[]
+  existing: string[],
 ): Promise<QuizItem[]> {
   const url = `${baseUrl}/${language}`;
   const res = await fetch(url, {
@@ -23,17 +24,14 @@ async function fetchQuizItems(
 }
 
 // TODO: unused
-export async function fetchAudioFiles(
-  baseUrl: string,
-  fileNames: string[]
-): Promise<Blob[]> {
+export async function fetchAudioFiles(baseUrl: string, fileNames: string[]): Promise<Blob[]> {
   const blobs = await Promise.all(
     fileNames.map(async (fileName) => {
       const url = `${baseUrl}/audio/${fileName}`;
       const res = await fetch(url);
       const blob = await res.blob();
       return blob;
-    })
+    }),
   );
   return blobs;
 }
@@ -83,11 +81,7 @@ async function getExistingPracticeItems(): Promise<string[]> {
 export async function fetchAndSaveData(baseUrl: string) {
   const existingPracticeItemKeys = await getExistingPracticeItems();
 
-  const quizItems = await fetchQuizItems(
-    baseUrl,
-    "jp",
-    existingPracticeItemKeys
-  ); // hardcoded to jp
+  const quizItems = await fetchQuizItems(baseUrl, "jp", existingPracticeItemKeys); // hardcoded to jp
   const courseItems = quizItems.map((item) => item.courseItem);
   await saveCourseItems(courseItems);
   const practiceItems = quizItems.map((item) => item.practiceItem);

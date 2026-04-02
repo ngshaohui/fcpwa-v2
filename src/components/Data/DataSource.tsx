@@ -1,12 +1,10 @@
-import {
-  checkHealth,
-  fetchAndSaveData,
-  retryFetchAudio,
-  syncPracticeItems,
-} from "@/utils/dataset";
-import styles from "./DataSource.module.css";
 import { useState } from "react";
+
+import { checkHealth, fetchAndSaveData, retryFetchAudio, syncPracticeItems } from "@/utils/dataset";
+
 import { Stats } from "./Stats";
+
+import styles from "./DataSource.module.css";
 
 const INPUT_DATASOURCE_NAME = "datasource";
 
@@ -35,9 +33,7 @@ export function DataSource() {
         setMsg("URL provided fails health check.");
       }
     } catch (e) {
-      setMsg(
-        "Error while checking datasource server, check console for more info."
-      );
+      setMsg("Error while checking datasource server, check console for more info.");
       throw e; // re-throw
     }
   }
@@ -82,11 +78,7 @@ export function DataSource() {
       <form className={styles.form} method="get" onSubmit={handleSubmit}>
         <label className={styles.label}>
           Datasource URL
-          <input
-            className={styles.input}
-            type="text"
-            name={INPUT_DATASOURCE_NAME}
-          />
+          <input className={styles.input} type="text" name={INPUT_DATASOURCE_NAME} />
         </label>
         <br />
         <button className={styles.submitButton} type="submit">
