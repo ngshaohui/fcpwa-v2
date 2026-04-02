@@ -102,7 +102,7 @@ export async function fetchAndSaveData(baseUrl: string) {
   }
   const audioUrls = maybeUrls.filter((url) => url !== null);
   for (let i = 0; i < audioUrls.length; i += 100) {
-    const urls = audioUrls.splice(i, i + 100);
+    const urls = audioUrls.slice(i, i + 100);
     const audioFiles = await fetchAudioFiles(baseUrl, urls);
     await saveAudioFile(urls, audioFiles);
   }
@@ -132,7 +132,7 @@ export async function retryFetchAudio(baseUrl: string) {
   // filter out existing urls
   const audioUrls = a1.filter((url) => !existingSet.has(url));
   for (let i = 0; i < audioUrls.length; i += 100) {
-    const urls = audioUrls.splice(i, i + 100);
+    const urls = audioUrls.slice(i, i + 100);
     const audioFiles = await fetchAudioFiles(baseUrl, urls);
     await saveAudioFile(urls, audioFiles);
   }
