@@ -19,7 +19,8 @@ export function DataSource() {
 
     const form = e.currentTarget;
     const formData = new FormData(form);
-    const urlCandidate = formData.get(INPUT_DATASOURCE_NAME) as string;
+    // remove trailing slash
+    const urlCandidate = (formData.get(INPUT_DATASOURCE_NAME) as string).replace(/\/+$/, "");
     if (!urlCandidate) return; // ignore empty string, it results in relative URL
     setUrl("");
     setMsg("");
