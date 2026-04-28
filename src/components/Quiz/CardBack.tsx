@@ -7,7 +7,7 @@ import { ShowSentence } from "./ShowSentence";
 
 import styles from "./CardBack.module.css";
 
-interface RangeSliderProps {
+interface RangeSelectorProps {
   selectScore: (score: number) => void;
 }
 
@@ -21,11 +21,7 @@ const KeyMap: Record<string, number> = {
   Digit6: 6,
 };
 
-function RangeSlider({ selectScore }: RangeSliderProps) {
-  function pointerUpListener(e: React.PointerEvent<HTMLInputElement>) {
-    const value = Number(e.currentTarget.value);
-    selectScore(value);
-  }
+function RangeSelector({ selectScore }: RangeSelectorProps) {
   const keyDownListener = useCallback(
     (e: KeyboardEvent) => {
       const value = Number(KeyMap[e.code]);
@@ -43,29 +39,14 @@ function RangeSlider({ selectScore }: RangeSliderProps) {
   }, [keyDownListener]);
 
   return (
-    <div>
-      <input
-        type="range"
-        name="easeFactor"
-        list="easeFactor"
-        min="0"
-        max="6"
-        defaultValue="4"
-        onPointerUp={pointerUpListener}
-      />
-      <datalist id="easeFactor">
-        <option value="0"></option>
-        <option value="1"></option>
-        <option value="2"></option>
-        <option value="3"></option>
-        <option value="4"></option>
-        <option value="5"></option>
-        <option value="6"></option>
-      </datalist>
-      <div className={styles.sliderLabel}>
-        <div>😵</div>
-        <div>😇</div>
-      </div>
+    <div className={styles.ranges}>
+      <button onClick={() => selectScore(0)}>😵</button>
+      <button onClick={() => selectScore(1)}>🧐</button>
+      <button onClick={() => selectScore(2)}>🤨</button>
+      <button onClick={() => selectScore(3)}>👻</button>
+      <button onClick={() => selectScore(4)}>🫡</button>
+      <button onClick={() => selectScore(5)}>😎</button>
+      <button onClick={() => selectScore(6)}>😇</button>
     </div>
   );
 }
@@ -94,7 +75,7 @@ export function CardBack({ courseItem, setQuality }: CardBackProps) {
         <ShowCue cue={courseItem.cue} />
         <ShowSentence sentences={courseItem.sentences} />
       </div>
-      <RangeSlider selectScore={selectScore} />
+      <RangeSelector selectScore={selectScore} />
     </div>
   );
 }

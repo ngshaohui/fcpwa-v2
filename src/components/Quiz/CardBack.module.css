@@ -12,9 +12,8 @@
   flex-grow: 1;
 }
 
-.sliderLabel {
-  width: 100%;
-  font-size: 1.2rem;
+.ranges {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 10px;
 }
