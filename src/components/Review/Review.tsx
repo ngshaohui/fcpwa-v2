@@ -123,6 +123,7 @@ export function Review() {
               practiceItem: {
                 ...i.practiceItem,
                 active: i.practiceItem.active === IDB_BOOL.True ? IDB_BOOL.False : IDB_BOOL.True,
+                date: i.practiceItem.date + 1,
               },
             }
           : i,
