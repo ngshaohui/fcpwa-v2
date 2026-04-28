@@ -185,6 +185,7 @@ export function Review() {
                 Due
                 <SortIndicator dir={sortState.date} />
               </th>
+              <th>Ease</th>
             </tr>
           </thead>
           <tbody>
@@ -198,6 +199,7 @@ export function Review() {
                 </td>
                 {showRepetitions && <td>{item.practiceItem.repetitions}</td>}
                 <td>{formatDate(item.practiceItem.date)}</td>
+                <td>{item.practiceItem.easeFactor.toFixed(2)}</td>
               </tr>
             ))}
           </tbody>
