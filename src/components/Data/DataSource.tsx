@@ -73,7 +73,7 @@ export function DataSource() {
       await backupPracticeItems(url);
       setMsg("Backup complete.");
     } catch (e) {
-      setMsg("Error while synchronising data, check console for more info.");
+      setMsg("Error while backing up data, check console for more info.");
       throw e; // re-throw
     }
   }
@@ -84,7 +84,7 @@ export function DataSource() {
       await retryFetchAudio(url);
       setMsg("Retry complete.");
     } catch (e) {
-      setMsg("Error while synchronising data, check console for more info.");
+      setMsg("Error while fetching audio files, check console for more info.");
       throw e; // re-throw
     }
   }

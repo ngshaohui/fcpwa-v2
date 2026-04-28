@@ -144,5 +144,7 @@ async def sync_progress(user_practice_items: list[PracticeItem]):
 @app.post("/backup-progress", response_class=JSONResponse)
 async def backup_progress(user_practice_items: list[PracticeItem]):
     timestamp = str(int(time.time()))
-    with open(f"dataset/jp_progress_backup_{timestamp}.json") as f:
+    with open(
+        f"dataset/jp_progress_backup_{timestamp}.json", "w", encoding="utf-8"
+    ) as f:
         f.write(json.dumps(user_practice_items))
