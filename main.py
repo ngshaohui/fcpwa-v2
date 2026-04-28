@@ -3,6 +3,7 @@ from fastapi.responses import FileResponse, JSONResponse, Response
 from fastapi.middleware.cors import CORSMiddleware
 import json
 import os
+import time
 
 from custom_types import CourseItem, PracticeItem, QuizItem
 
@@ -138,3 +139,10 @@ async def sync_progress(user_practice_items: list[PracticeItem]):
         f.write(json.dumps(final_server_items))
 
     return client_items_to_update
+
+
+@app.post("/backup-progress", response_class=JSONResponse)
+async def backup_progress(user_practice_items: list[PracticeItem]):
+    timestamp = str(int(time.time()))
+    with open(f"dataset/jp_progress_backup_{timestamp}.json") as f:
+        f.write(json.dumps(user_practice_items))

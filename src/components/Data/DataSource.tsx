@@ -1,6 +1,12 @@
 import { useState } from "react";
 
-import { checkHealth, fetchAndSaveData, retryFetchAudio, syncPracticeItems } from "@/utils/dataset";
+import {
+  backupPracticeItems,
+  checkHealth,
+  fetchAndSaveData,
+  retryFetchAudio,
+  syncPracticeItems,
+} from "@/utils/dataset";
 
 import { Stats } from "./Stats";
 
@@ -43,7 +49,7 @@ export function DataSource() {
     // TODO: move this to a worker
     try {
       await fetchAndSaveData(url);
-      setMsg("Done.");
+      setMsg("Fetch complete.");
     } catch (e) {
       setMsg("Error while fetching data, check console for more info.");
       throw e; // re-throw
@@ -54,7 +60,18 @@ export function DataSource() {
     // TODO: move this to a worker
     try {
       await syncPracticeItems(url);
-      setMsg("Done.");
+      setMsg("Sync complete.");
+    } catch (e) {
+      setMsg("Error while synchronising data, check console for more info.");
+      throw e; // re-throw
+    }
+  }
+
+  async function backupData() {
+    // TODO: move this to a worker
+    try {
+      await backupPracticeItems(url);
+      setMsg("Backup complete.");
     } catch (e) {
       setMsg("Error while synchronising data, check console for more info.");
       throw e; // re-throw
@@ -65,7 +82,7 @@ export function DataSource() {
     // TODO: move this to a worker
     try {
       await retryFetchAudio(url);
-      setMsg("Done.");
+      setMsg("Retry complete.");
     } catch (e) {
       setMsg("Error while synchronising data, check console for more info.");
       throw e; // re-throw
@@ -96,6 +113,10 @@ export function DataSource() {
       <br />
       <button onClick={syncData} disabled={!isValidUrl}>
         Sync data
+      </button>
+      <br />
+      <button onClick={backupData} disabled={!isValidUrl}>
+        Backup data
       </button>
       <br />
       <button onClick={retryAudio} disabled={!isValidUrl}>

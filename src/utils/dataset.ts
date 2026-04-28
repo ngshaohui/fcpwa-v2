@@ -150,3 +150,16 @@ async function uploadPracticeItems(baseUrl: string) {
   });
   return (await res.json()) as PracticeItem[];
 }
+
+export async function backupPracticeItems(baseUrl: string) {
+  const url = `${baseUrl}/backup-progress`;
+  const db = await idbDB;
+  const practiceItems: PracticeItem[] = await db.getAll("PracticeItems");
+  await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(practiceItems),
+  });
+}
