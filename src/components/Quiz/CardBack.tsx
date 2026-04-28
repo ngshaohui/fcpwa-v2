@@ -50,7 +50,7 @@ function RangeSlider({ selectScore }: RangeSliderProps) {
         list="easeFactor"
         min="0"
         max="6"
-        defaultValue="3"
+        defaultValue="4"
         onPointerUp={pointerUpListener}
       />
       <datalist id="easeFactor">
