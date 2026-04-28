@@ -17,3 +17,7 @@
   justify-content: center;
   gap: 10px;
 }
+
+.rangeBtn {
+  padding: 0.5em;
+}

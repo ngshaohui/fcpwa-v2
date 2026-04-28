@@ -40,13 +40,27 @@ function RangeSelector({ selectScore }: RangeSelectorProps) {
 
   return (
     <div className={styles.ranges}>
-      <button onClick={() => selectScore(0)}>😵</button>
-      <button onClick={() => selectScore(1)}>🧐</button>
-      <button onClick={() => selectScore(2)}>🤨</button>
-      <button onClick={() => selectScore(3)}>👻</button>
-      <button onClick={() => selectScore(4)}>🫡</button>
-      <button onClick={() => selectScore(5)}>😎</button>
-      <button onClick={() => selectScore(6)}>😇</button>
+      <button className={styles.rangeBtn} onClick={() => selectScore(0)}>
+        😵
+      </button>
+      <button className={styles.rangeBtn} onClick={() => selectScore(1)}>
+        🧐
+      </button>
+      <button className={styles.rangeBtn} onClick={() => selectScore(2)}>
+        🤨
+      </button>
+      <button className={styles.rangeBtn} onClick={() => selectScore(3)}>
+        👻
+      </button>
+      <button className={styles.rangeBtn} onClick={() => selectScore(4)}>
+        🫡
+      </button>
+      <button className={styles.rangeBtn} onClick={() => selectScore(5)}>
+        😎
+      </button>
+      <button className={styles.rangeBtn} onClick={() => selectScore(6)}>
+        😇
+      </button>
     </div>
   );
 }
