@@ -64,11 +64,9 @@ export async function update(practiceItem: PracticeItem, quality: number) {
   const store = tx.objectStore(StorageKeys.PracticeItems);
 
   const curDate = new Date().getTime();
-  const diffTime = Math.abs(practiceItem.date - curDate);
-  const diffDays = Math.ceil(diffTime / MILLISECONDS_IN_DAY);
-
-  // reduce the occurence of items being shown in the same order when they have the same score
-  const randomDelta = Math.round(Math.random() * (MILLISECONDS_IN_HOUR * 2) - MILLISECONDS_IN_HOUR);
+  const diffTime = curDate - practiceItem.date;
+  // default to 0.5 interval if item is attempted early
+  const diffDays = Math.max(0.5, Math.ceil(diffTime / MILLISECONDS_IN_DAY));
 
   const { easeFactor, repetitions, date } = sm2(
     quality,
@@ -77,6 +75,9 @@ export async function update(practiceItem: PracticeItem, quality: number) {
     diffDays,
     curDate,
   );
+
+  // reduce the occurence of items being shown in the same order when they have the same score
+  const randomDelta = Math.round(Math.random() * (MILLISECONDS_IN_HOUR * 2) - MILLISECONDS_IN_HOUR);
 
   store.put({
     ...practiceItem,
