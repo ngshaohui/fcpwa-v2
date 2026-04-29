@@ -1,4 +1,4 @@
-const MILLISECONDS_IN_DAY = 24 * 60 * 60 * 1000;
+import { MILLISECONDS_IN_DAY } from "@/common/constants";
 
 export function sm2(
   quality: number,
@@ -17,7 +17,7 @@ export function sm2(
   const nextInterval = getNextInterval(interval, nextRepetitions, nextEaseFactor);
 
   // next practice
-  const nextPracticeDate = new Date(unixTimeNow).getTime() + MILLISECONDS_IN_DAY * nextInterval;
+  const nextPracticeDate = unixTimeNow + MILLISECONDS_IN_DAY * nextInterval;
 
   return {
     easeFactor: nextEaseFactor,

@@ -1,4 +1,9 @@
-import { IDB_BOOL, StorageKeys } from "@/common/constants";
+import {
+  IDB_BOOL,
+  MILLISECONDS_IN_DAY,
+  MILLISECONDS_IN_HOUR,
+  StorageKeys,
+} from "@/common/constants";
 import type { PracticeItem, QuizItem } from "@/common/types";
 
 import { idbDB } from "./services";
@@ -58,24 +63,26 @@ export async function update(practiceItem: PracticeItem, quality: number) {
   const tx = db.transaction(StorageKeys.PracticeItems, "readwrite");
   const store = tx.objectStore(StorageKeys.PracticeItems);
 
-  const dateDue = new Date(practiceItem.date);
-  const curDate = new Date();
-  const diffTime = Math.abs(dateDue.getTime() - curDate.getTime());
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  const curDate = new Date().getTime();
+  const diffTime = Math.abs(practiceItem.date - curDate);
+  const diffDays = Math.ceil(diffTime / MILLISECONDS_IN_DAY);
+
+  // reduce the occurence of items being shown in the same order when they have the same score
+  const randomDelta = Math.round(Math.random() * (MILLISECONDS_IN_HOUR * 2) - MILLISECONDS_IN_HOUR);
 
   const { easeFactor, repetitions, date } = sm2(
     quality,
     practiceItem.repetitions,
     practiceItem.easeFactor,
     diffDays,
-    curDate.getTime(),
+    curDate,
   );
 
   store.put({
     ...practiceItem,
     repetitions,
     easeFactor,
-    date,
+    date: date + randomDelta,
   });
 
   await tx.done;
