@@ -30,22 +30,26 @@ async function getStats() {
   };
 }
 
-export function Stats() {
+export function StorageStats() {
   const [courseItemsCount, setCourseItemsCount] = useState<number | null>(null);
   const [practiceItemsCount, setPracticeItemsCount] = useState<number | null>(null);
   const [audioCount, setAudioCount] = useState<number | null>(null);
 
+  async function update() {
+    const stats = await getStats();
+    setCourseItemsCount(stats.courseItemsCount);
+    setPracticeItemsCount(stats.practiceItemsCount);
+    setAudioCount(stats.audioCount);
+  }
+
   useEffect(() => {
     (async () => {
-      const stats = await getStats();
-      setCourseItemsCount(stats.courseItemsCount);
-      setPracticeItemsCount(stats.practiceItemsCount);
-      setAudioCount(stats.audioCount);
+      await update();
     })();
   }, []);
 
   return (
-    <div>
+    <div onClick={update}>
       <p>{courseItemsCount} Course items</p>
       <p>{practiceItemsCount} Practice items</p>
       <p>{audioCount} Audio files</p>

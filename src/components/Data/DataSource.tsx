@@ -8,7 +8,7 @@ import {
   syncPracticeItems,
 } from "@/utils/dataset";
 
-import { Stats } from "./Stats";
+import { StorageStats } from "./StorageStats";
 
 import styles from "./DataSource.module.css";
 
@@ -125,7 +125,7 @@ export function DataSource() {
 
       <hr />
 
-      <Stats />
+      <StorageStats />
     </div>
   );
 }
