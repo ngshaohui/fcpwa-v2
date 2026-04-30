@@ -21,9 +21,9 @@ export interface IDBDB extends DBSchema {
     key: string;
     value: PracticeItem;
     indexes: {
-      date: number;
       active: number;
-      active_date: [number, number];
+      active_date: [number, number]; // to calculate due items
+      active_repetitions: [number, number]; // to calculate inactive items
     };
   };
   [StorageKeys.Audio]: {
@@ -44,9 +44,9 @@ export const idbDB = openDB<IDBDB>(DBName, 1, {
     const practiceItemsStore = db.createObjectStore(StorageKeys.PracticeItems, {
       keyPath: "courseItemId",
     });
-    practiceItemsStore.createIndex("date", "date");
     practiceItemsStore.createIndex("active", "active");
     practiceItemsStore.createIndex("active_date", ["active", "date"]);
+    practiceItemsStore.createIndex("active_repetitions", ["active", "repetitions"]);
     db.createObjectStore(StorageKeys.Audio);
     const userSettingsStore = db.createObjectStore(StorageKeys.UserSettings);
     userSettingsStore.add(DEFAULT_USER_SETTINGS, StorageKeys.UserSettings);

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 
 import { IDB_BOOL, StorageKeys } from "@/common/constants";
-import type { PracticeItem } from "@/common/types";
 import { idbDB } from "@/utils/services";
 
 interface ActiveStatsData {
@@ -16,26 +15,22 @@ async function countActiveStats(): Promise<ActiveStatsData> {
   const db = await idbDB;
   const tx = db.transaction(StorageKeys.PracticeItems, "readonly");
   const store = tx.objectStore(StorageKeys.PracticeItems);
-  const items: PracticeItem[] = await store.getAll();
 
-  let active = 0;
-  let due = 0;
-  let deactivated = 0;
   const now = Date.now();
+  const [total, due, active, deactivated] = await Promise.all([
+    store.count(),
+    store
+      .index("active_date")
+      .count(IDBKeyRange.bound([IDB_BOOL.True, -Infinity], [IDB_BOOL.True, now])),
+    store.index("active").count(IDBKeyRange.only(IDB_BOOL.True)),
+    store
+      .index("active_repetitions")
+      .count(IDBKeyRange.bound([IDB_BOOL.False, 1], [IDB_BOOL.False, Infinity])),
+  ]);
 
-  for (const item of items) {
-    if (item.active === IDB_BOOL.True) {
-      active++;
-      if (item.date <= now) {
-        due++;
-      }
-    } else if (item.repetitions > 0) {
-      // toggled to deactivated
-      deactivated++;
-    }
-  }
+  await tx.done;
 
-  return { active, due, deactivated, attempted: active + deactivated, total: items.length };
+  return { active, due, deactivated, attempted: active + deactivated, total };
 }
 
 function formatPercent(numerator: number, denominator: number): string {

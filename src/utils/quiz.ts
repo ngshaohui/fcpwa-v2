@@ -63,7 +63,7 @@ export async function update(practiceItem: PracticeItem, quality: number) {
   const tx = db.transaction(StorageKeys.PracticeItems, "readwrite");
   const store = tx.objectStore(StorageKeys.PracticeItems);
 
-  const curDate = new Date().getTime();
+  const curDate = Date.now();
   const diffTime = curDate - practiceItem.date;
   // default to 0.5 interval if item is attempted early
   const diffDays = Math.max(0.5, Math.ceil(diffTime / MILLISECONDS_IN_DAY));
