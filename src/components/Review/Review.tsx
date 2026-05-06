@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import { IDB_BOOL } from "@/common/constants";
 import type { QuizItem } from "@/common/types";
-import { getAllQuizItems, toggleActive } from "@/utils/review";
+import { getAllQuizItems, modifyEaseFactor, toggleActive } from "@/utils/review";
 
 import styles from "./Review.module.css";
 
@@ -10,7 +10,7 @@ type SortField = "active" | "date" | "repetitions" | "ease";
 type SortDir = "asc" | "desc" | "neutral";
 type SortState = Record<SortField, SortDir>;
 
-type OptionalColumn = "translation" | "transliteration" | "repetitions";
+type OptionalColumn = "translation" | "transliteration" | "repetitions" | "easeToggle";
 
 const SORT_PRIORITY: SortField[] = ["active", "date", "repetitions", "ease"];
 
@@ -139,9 +139,30 @@ export function Review() {
     );
   }
 
+  async function changeEaseFactor(item: QuizItem, dir: "inc" | "dec") {
+    const newEaseFactor =
+      dir === "inc" ? item.practiceItem.easeFactor + 1 : item.practiceItem.easeFactor - 1;
+    await modifyEaseFactor(item.practiceItem.courseItemId, newEaseFactor);
+    setItems((prev) =>
+      prev.map((i) =>
+        i.practiceItem.courseItemId === item.practiceItem.courseItemId
+          ? {
+              ...i,
+              practiceItem: {
+                ...i.practiceItem,
+                easeFactor: newEaseFactor,
+                date: i.practiceItem.date + 1,
+              },
+            }
+          : i,
+      ),
+    );
+  }
+
   const showTranslation = visibleColumns.has("translation");
   const showTransliteration = visibleColumns.has("transliteration");
   const showRepetitions = visibleColumns.has("repetitions");
+  const showEaseToggle = visibleColumns.has("easeToggle");
 
   return (
     <div className={styles.container}>
@@ -178,6 +199,14 @@ export function Review() {
           />
           Toggle Active
         </label>
+        <label>
+          <input
+            type="checkbox"
+            checked={showEaseToggle}
+            onChange={() => toggleColumn("easeToggle")}
+          />
+          Modify Ease Factor
+        </label>
       </div>
 
       <div className={styles.tableWrapper}>
@@ -205,6 +234,12 @@ export function Review() {
                 Ease
                 <SortIndicator dir={sortState.ease} />
               </th>
+              {showEaseToggle && (
+                <>
+                  <th>+</th>
+                  <th>-</th>
+                </>
+              )}
             </tr>
           </thead>
           <tbody>
@@ -219,6 +254,12 @@ export function Review() {
                 {showRepetitions && <td>{item.practiceItem.repetitions}</td>}
                 <td>{formatDate(item.practiceItem.date)}</td>
                 <td>{item.practiceItem.easeFactor.toFixed(2)}</td>
+                {showEaseToggle && (
+                  <>
+                    <td onClick={() => changeEaseFactor(item, "inc")}>+</td>
+                    <td onClick={() => changeEaseFactor(item, "dec")}>-</td>
+                  </>
+                )}
               </tr>
             ))}
           </tbody>

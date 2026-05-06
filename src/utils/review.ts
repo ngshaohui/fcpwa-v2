@@ -41,3 +41,17 @@ export async function toggleActive(courseItemId: string, currentActive: number):
 
   await tx.done;
 }
+
+export async function modifyEaseFactor(courseItemId: string, easeFactor: number): Promise<void> {
+  const db = await idbDB;
+  const tx = db.transaction(StorageKeys.PracticeItems, "readwrite");
+  const store = tx.objectStore(StorageKeys.PracticeItems);
+
+  const item = await store.get(courseItemId);
+  if (item) {
+    item.easeFactor = easeFactor;
+    await store.put(item);
+  }
+
+  await tx.done;
+}
