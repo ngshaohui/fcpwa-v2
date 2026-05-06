@@ -6,18 +6,19 @@ import { getAllQuizItems, toggleActive } from "@/utils/review";
 
 import styles from "./Review.module.css";
 
-type SortField = "active" | "date" | "repetitions";
+type SortField = "active" | "date" | "repetitions" | "ease";
 type SortDir = "asc" | "desc" | "neutral";
 type SortState = Record<SortField, SortDir>;
 
 type OptionalColumn = "translation" | "transliteration" | "repetitions";
 
-const SORT_PRIORITY: SortField[] = ["active", "date", "repetitions"];
+const SORT_PRIORITY: SortField[] = ["active", "date", "repetitions", "ease"];
 
 const DEFAULT_SORT: SortState = {
   active: "asc",
   date: "asc",
   repetitions: "neutral",
+  ease: "neutral",
 };
 
 function cycleSortDir(dir: SortDir): SortDir {
@@ -63,6 +64,9 @@ function compareBySortState(a: QuizItem, b: QuizItem, sortState: SortState): num
       case "repetitions":
         diff = a.practiceItem.repetitions - b.practiceItem.repetitions;
         break;
+      case "ease":
+        diff = a.practiceItem.easeFactor - b.practiceItem.easeFactor;
+        break;
     }
 
     if (diff !== 0) {
@@ -84,6 +88,7 @@ export function Review() {
   const [items, setItems] = useState<QuizItem[]>([]);
   const [sortState, setSortState] = useState<SortState>(DEFAULT_SORT);
   const [visibleColumns, setVisibleColumns] = useState<Set<OptionalColumn>>(new Set());
+  const [canActivate, setCanActivate] = useState(false);
 
   useEffect(() => {
     getAllQuizItems().then(setItems);
@@ -114,6 +119,9 @@ export function Review() {
   }
 
   async function handleToggleActive(item: QuizItem) {
+    if (!canActivate) {
+      return;
+    }
     await toggleActive(item.practiceItem.courseItemId, item.practiceItem.active);
     setItems((prev) =>
       prev.map((i) =>
@@ -162,6 +170,14 @@ export function Review() {
           />
           Repetitions
         </label>
+        <label>
+          <input
+            type="checkbox"
+            checked={canActivate}
+            onChange={() => setCanActivate((state) => !state)}
+          />
+          Toggle Active
+        </label>
       </div>
 
       <div className={styles.tableWrapper}>
@@ -185,7 +201,10 @@ export function Review() {
                 Due
                 <SortIndicator dir={sortState.date} />
               </th>
-              <th>Ease</th>
+              <th className={styles.sortable} onClick={() => handleSort("ease")}>
+                Ease
+                <SortIndicator dir={sortState.ease} />
+              </th>
             </tr>
           </thead>
           <tbody>
