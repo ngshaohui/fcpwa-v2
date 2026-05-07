@@ -1,8 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 
 import { IDB_BOOL } from "@/common/constants";
-import type { QuizItem } from "@/common/types";
+import type { CourseItem, QuizItem } from "@/common/types";
 import { getAllQuizItems, modifyEaseFactor, toggleActive } from "@/utils/review";
+
+import ReviewCard from "./ReviewCard";
 
 import styles from "./Review.module.css";
 
@@ -89,6 +92,7 @@ export function Review() {
   const [sortState, setSortState] = useState<SortState>(DEFAULT_SORT);
   const [visibleColumns, setVisibleColumns] = useState<Set<OptionalColumn>>(new Set());
   const [canActivate, setCanActivate] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<null | CourseItem>(null);
 
   useEffect(() => {
     getAllQuizItems().then(setItems);
@@ -166,6 +170,10 @@ export function Review() {
 
   return (
     <div className={styles.container}>
+      {createPortal(
+        <ReviewCard onClose={() => setSelectedItem(null)} courseItem={selectedItem} />,
+        document.body,
+      )}
       <div className={styles.toggles}>
         <label>
           <input
@@ -245,7 +253,7 @@ export function Review() {
           <tbody>
             {sortedItems.map((item) => (
               <tr key={item.courseItem.id}>
-                <td>{item.courseItem.cue.text}</td>
+                <td onClick={() => setSelectedItem(item.courseItem)}>{item.courseItem.cue.text}</td>
                 {showTransliteration && <td>{item.courseItem.cue.transliteration ?? ""}</td>}
                 {showTranslation && <td>{item.courseItem.cue.translation}</td>}
                 <td className={styles.activeToggle} onClick={() => handleToggleActive(item)}>
