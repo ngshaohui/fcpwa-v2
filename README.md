@@ -41,6 +41,7 @@ npm run format
 ## TODO
 
 - download status and progress
+- check why duplicates audio files are being requested
 
 ## Screens
 
@@ -53,7 +54,7 @@ npm run format
 
 - Flipcard style quiz
   - Front displays the cue card
-  - Back displays the solution, with a score selection from 0 to 6
+  - Back displays the solution, with a score selection from 0 to 5
   - Review order and score is calculated using sm2 algorithm
 
 ### Review
