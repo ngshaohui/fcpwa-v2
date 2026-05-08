@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 import { IDB_BOOL } from "@/common/constants";
 import type { CourseItem, QuizItem } from "@/common/types";
-import { getAllQuizItems, modifyEaseFactor, toggleActive } from "@/utils/review";
+import { getQuizItems, modifyEaseFactor, toggleActive } from "@/utils/review";
 
 import ReviewCard from "./ReviewCard";
 
@@ -88,19 +88,35 @@ function SortIndicator({ dir }: { dir: SortDir }) {
 }
 
 export function Review() {
-  const [items, setItems] = useState<QuizItem[]>([]);
+  const [quizItems, setQuizItems] = useState<QuizItem[]>([]);
   const [sortState, setSortState] = useState<SortState>(DEFAULT_SORT);
   const [visibleColumns, setVisibleColumns] = useState<Set<OptionalColumn>>(new Set());
   const [canActivate, setCanActivate] = useState(false);
   const [selectedItem, setSelectedItem] = useState<null | CourseItem>(null);
+  const hasPopulated = useRef(false);
+
+  async function populate() {
+    const ls = await getQuizItems(100);
+    setQuizItems(ls);
+    const lastItem: [number, number] = [
+      ls[ls.length - 1].practiceItem.active,
+      ls[ls.length - 1].practiceItem.date,
+    ];
+    const items = await getQuizItems(null, lastItem);
+    setQuizItems((curItems) => [...curItems, ...items]);
+  }
 
   useEffect(() => {
-    getAllQuizItems().then(setItems);
+    if (hasPopulated.current) {
+      return;
+    }
+    hasPopulated.current = true;
+    populate();
   }, []);
 
   const sortedItems = useMemo(
-    () => [...items].sort((a, b) => compareBySortState(a, b, sortState)),
-    [items, sortState],
+    () => [...quizItems].sort((a, b) => compareBySortState(a, b, sortState)),
+    [quizItems, sortState],
   );
 
   function handleSort(field: SortField) {
@@ -127,7 +143,7 @@ export function Review() {
       return;
     }
     await toggleActive(item.practiceItem.courseItemId, item.practiceItem.active);
-    setItems((prev) =>
+    setQuizItems((prev) =>
       prev.map((i) =>
         i.practiceItem.courseItemId === item.practiceItem.courseItemId
           ? {
@@ -147,7 +163,7 @@ export function Review() {
     const newEaseFactor =
       dir === "inc" ? item.practiceItem.easeFactor + 1 : item.practiceItem.easeFactor - 1;
     await modifyEaseFactor(item.practiceItem.courseItemId, newEaseFactor);
-    setItems((prev) =>
+    setQuizItems((prev) =>
       prev.map((i) =>
         i.practiceItem.courseItemId === item.practiceItem.courseItemId
           ? {
