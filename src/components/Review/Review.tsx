@@ -94,6 +94,16 @@ export function Review() {
   const [canActivate, setCanActivate] = useState(false);
   const [selectedItem, setSelectedItem] = useState<null | CourseItem>(null);
   const hasPopulated = useRef(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredItems = quizItems.filter((item) => {
+    const cue = item.courseItem.cue;
+    return (
+      cue.text.includes(searchQuery) ||
+      cue.translation.includes(searchQuery) ||
+      cue.transliteration?.includes(searchQuery)
+    );
+  });
 
   async function populate() {
     const ls = await getQuizItems(100);
@@ -115,8 +125,8 @@ export function Review() {
   }, []);
 
   const sortedItems = useMemo(
-    () => [...quizItems].sort((a, b) => compareBySortState(a, b, sortState)),
-    [quizItems, sortState],
+    () => [...filteredItems].sort((a, b) => compareBySortState(a, b, sortState)),
+    [filteredItems, sortState],
   );
 
   function handleSort(field: SortField) {
@@ -234,6 +244,11 @@ export function Review() {
       </div>
 
       <div className={styles.tableWrapper}>
+        <input
+          className={styles.input}
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.currentTarget.value)}
+        />
         <table className={styles.table}>
           <thead>
             <tr>
