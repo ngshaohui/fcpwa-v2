@@ -18,7 +18,7 @@ type OptionalColumn = "translation" | "transliteration" | "repetitions" | "easeT
 const SORT_PRIORITY: SortField[] = ["active", "date", "repetitions", "ease"];
 
 const DEFAULT_SORT: SortState = {
-  active: "asc",
+  active: "neutral",
   date: "asc",
   repetitions: "neutral",
   ease: "neutral",
