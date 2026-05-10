@@ -1,24 +1,21 @@
 import { useEffect, useState } from "react";
 
 import type { QuizItem } from "@/common/types";
-import { useSettings, useSettingsDispatch } from "@/SettingsContext";
-import { getNewQuizItem, getQuizItem, update } from "@/utils/quiz";
+import { useSettingsDispatch } from "@/SettingsContext";
+import { getQuizItem, update } from "@/utils/quiz";
 
 import { CardBack } from "./CardBack";
 import { CardFront } from "./CardFront";
 
 export function QuizMode() {
-  const settings = useSettings();
   const [isFront, setIsFront] = useState<boolean>(true);
   const [quizItem, setQuizItem] = useState<QuizItem | null>(null);
-  const [idx, setIdx] = useState(0);
   const dispatch = useSettingsDispatch();
 
   // set first item
   useEffect(() => {
     (async () => {
-      const nextQuizItem =
-        idx < settings.numNewItems ? await getNewQuizItem() : await getQuizItem();
+      const nextQuizItem = await getQuizItem();
       setQuizItem(nextQuizItem);
 
       if (nextQuizItem === null) {
@@ -29,12 +26,9 @@ export function QuizMode() {
         });
       }
     })();
-  }, [idx, settings.numNewItems]);
+  }, [dispatch, isFront]);
 
   async function handleFlip() {
-    if (!isFront) {
-      setIdx((curIdx) => curIdx + 1);
-    }
     setIsFront((cur) => !cur);
   }
 

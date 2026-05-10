@@ -28,26 +28,6 @@ export async function getQuizItem(): Promise<QuizItem | null> {
   return getQuizItemFromPracticeItem(item);
 }
 
-export async function getNewQuizItem(): Promise<QuizItem | null> {
-  const db = await idbDB;
-  const tx = db.transaction(StorageKeys.PracticeItems, "readonly");
-  const store = tx.objectStore(StorageKeys.PracticeItems);
-  const index = store.index("active_date");
-
-  const range = IDBKeyRange.bound(
-    [IDB_BOOL.False, -Infinity], // min possible date
-    [IDB_BOOL.False, Infinity], // max possible date
-  );
-
-  const item = await index.get(range);
-  if (item === undefined) {
-    return null;
-  }
-  // mark item as active
-  const activeItem = { ...item, active: IDB_BOOL.True };
-  return getQuizItemFromPracticeItem(activeItem);
-}
-
 async function getQuizItemFromPracticeItem(item: PracticeItem): Promise<QuizItem> {
   const db = await idbDB;
   const courseItem = await db.get(StorageKeys.CourseItems, item.courseItemId);

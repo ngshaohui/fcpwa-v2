@@ -8,7 +8,6 @@ type AppSettings = {
   muteAudio: boolean;
   showTransliteration: boolean;
   showEnglish: boolean;
-  numNewItems: number;
 };
 
 const DEFAULT_SETTINGS: AppSettings = {
@@ -16,15 +15,13 @@ const DEFAULT_SETTINGS: AppSettings = {
   muteAudio: false,
   showTransliteration: false,
   showEnglish: false,
-  numNewItems: 5,
 };
 
 type Action =
   | { type: "SET_APP_STATE"; payload: AppState }
   | { type: "SET_MUTE_AUDIO"; payload: boolean }
   | { type: "SET_SHOW_TRANSLITERATION"; payload: boolean }
-  | { type: "SET_SHOW_ENGLISH"; payload: boolean }
-  | { type: "SET_NEW_QUIZ"; payload: number };
+  | { type: "SET_SHOW_ENGLISH"; payload: boolean };
 
 const SettingsContext = createContext<AppSettings>(DEFAULT_SETTINGS);
 const SettingsDispatchContext = createContext<Dispatch<Action> | null>(null);
@@ -69,13 +66,6 @@ function settingsReducer(settings: AppSettings, action: Action) {
       return {
         ...settings,
         showEnglish: action.payload,
-      };
-    }
-    case "SET_NEW_QUIZ": {
-      return {
-        ...settings,
-        appState: "quiz" as AppState,
-        numNewItems: action.payload,
       };
     }
   }
