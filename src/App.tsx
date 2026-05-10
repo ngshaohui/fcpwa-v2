@@ -1,4 +1,3 @@
-import "./App.css";
 import { DataSource } from "@/components/Data";
 import { Menubar } from "@/components/Menubar";
 import { QuizMode } from "@/components/Quiz";
