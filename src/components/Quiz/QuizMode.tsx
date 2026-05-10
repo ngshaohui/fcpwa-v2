@@ -2,29 +2,32 @@ import { useEffect, useState } from "react";
 
 import type { QuizItem } from "@/common/types";
 import { useSettingsDispatch } from "@/SettingsContext";
-import { getQuizItem, update } from "@/utils/quiz";
+import { getQuizItemPair, update } from "@/utils/quiz";
 
 import { CardBack } from "./CardBack";
 import { CardFront } from "./CardFront";
 
 export function QuizMode() {
   const [isFront, setIsFront] = useState<boolean>(true);
-  const [quizItem, setQuizItem] = useState<QuizItem | null>(null);
+  const [curQuizItem, setCurQuizItem] = useState<QuizItem | null>(null);
+  const [nextQuizItem, setNextQuizItem] = useState<QuizItem | null>(null);
   const dispatch = useSettingsDispatch();
 
-  // set first item
   useEffect(() => {
     (async () => {
-      const nextQuizItem = await getQuizItem();
-      setQuizItem(nextQuizItem);
-
-      if (nextQuizItem === null) {
+      const [cur, next] = await getQuizItemPair();
+      if (cur === null) {
         // end quiz
         dispatch({
           type: "SET_APP_STATE",
           payload: "setup",
         });
       }
+
+      // caveat note: if the current item is the same as previous (unlikely but possible)
+      // the text displayed will change from the one set preemptively
+      setCurQuizItem(cur);
+      setNextQuizItem(next);
     })();
   }, [dispatch, isFront]);
 
@@ -33,20 +36,21 @@ export function QuizMode() {
   }
 
   function handleSetQuality(quality: number) {
-    if (quizItem === null) {
+    if (curQuizItem === null) {
       return;
     }
-    update(quizItem.practiceItem, quality);
+    update(curQuizItem.practiceItem, quality);
     handleFlip();
+    setCurQuizItem(nextQuizItem); // preemptively set cur item
   }
 
-  if (quizItem === null) {
+  if (curQuizItem === null) {
     return <div>No items to start quiz session</div>;
   }
 
   if (isFront) {
-    return <CardFront cueText={quizItem.courseItem.cue.text} flip={handleFlip} />;
+    return <CardFront cueText={curQuizItem.courseItem.cue.text} flip={handleFlip} />;
   } else {
-    return <CardBack courseItem={quizItem.courseItem} setQuality={handleSetQuality} />;
+    return <CardBack courseItem={curQuizItem.courseItem} setQuality={handleSetQuality} />;
   }
 }

@@ -9,9 +9,8 @@ import type { PracticeItem, QuizItem } from "@/common/types";
 import { idbDB } from "./services";
 import { sm2 } from "./sm2";
 
-export async function getQuizItem(): Promise<QuizItem | null> {
+export async function getQuizItemPair(): Promise<[QuizItem | null, QuizItem | null]> {
   const db = await idbDB;
-
   const tx = db.transaction(StorageKeys.PracticeItems, "readonly");
   const store = tx.objectStore(StorageKeys.PracticeItems);
   const index = store.index("active_date");
@@ -21,11 +20,18 @@ export async function getQuizItem(): Promise<QuizItem | null> {
     [IDB_BOOL.True, Infinity], // max possible date
   );
 
-  const item = await index.get(range);
-  if (item === undefined) {
-    return null;
+  const items = await index.getAll(range, 2);
+  const quizItems = await Promise.all(items.map(getQuizItemFromPracticeItem));
+
+  // use switch to fulfil type checking
+  switch (quizItems.length) {
+    case 2:
+      return [quizItems[0], quizItems[1]];
+    case 1:
+      return [quizItems[0], null];
+    default:
+      return [null, null];
   }
-  return getQuizItemFromPracticeItem(item);
 }
 
 async function getQuizItemFromPracticeItem(item: PracticeItem): Promise<QuizItem> {
