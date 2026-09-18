@@ -12,9 +12,6 @@ interface RangeSelectorProps {
 }
 
 const KeyMap: Record<string, number> = {
-  Digit0: 0,
-  Digit1: 1,
-  Digit2: 2,
   Digit3: 3,
   Digit4: 4,
   Digit5: 5,
@@ -39,20 +36,11 @@ function RangeSelector({ selectScore }: RangeSelectorProps) {
 
   return (
     <div className={styles.ranges}>
-      <button className={styles.rangeBtn} onClick={() => selectScore(0)}>
-        😵
-      </button>
-      <button className={styles.rangeBtn} onClick={() => selectScore(1)}>
-        🧐
-      </button>
-      <button className={styles.rangeBtn} onClick={() => selectScore(2)}>
+      <button className={styles.rangeBtn} onClick={() => selectScore(3)}>
         🤨
       </button>
-      <button className={styles.rangeBtn} onClick={() => selectScore(3)}>
-        🫡
-      </button>
       <button className={styles.rangeBtn} onClick={() => selectScore(4)}>
-        😎
+        🫡
       </button>
       <button className={styles.rangeBtn} onClick={() => selectScore(5)}>
         😇
