@@ -1,4 +1,4 @@
-import { createContext, useRef, useEffect } from "react";
+import { createContext, useRef, useEffect, useCallback, useMemo } from "react";
 
 import { StorageKeys } from "@/common/constants";
 import { idbDB } from "@/utils/services"; // your db
@@ -26,26 +26,30 @@ export function AudioProvider({ children, muted }: { children: React.ReactNode; 
     el.muted = muted;
   }, [muted]);
 
-  async function play(id: string) {
-    const el = audioRef.current!;
+  const play = useCallback(
+    async (id: string) => {
+      const el = audioRef.current!;
 
-    if (muted) return; // setting-based mute
+      if (muted) return; // setting-based mute
 
-    const blob = await (await idbDB).get(StorageKeys.Audio, id);
-    if (!blob) return;
+      const blob = await (await idbDB).get(StorageKeys.Audio, id);
+      if (!blob) return;
 
-    // cleanup old URL
-    if (lastUrl) URL.revokeObjectURL(lastUrl);
+      // cleanup old URL
+      if (lastUrl) URL.revokeObjectURL(lastUrl);
 
-    const url = (lastUrl = URL.createObjectURL(blob));
-    el.src = url;
+      const url = (lastUrl = URL.createObjectURL(blob));
+      el.src = url;
 
-    try {
-      await el.play();
-    } catch (err) {
-      console.warn("Playback blocked:", err);
-    }
-  }
+      try {
+        await el.play();
+      } catch (err) {
+        console.warn("Playback blocked:", err);
+      }
+    },
+    [muted],
+  );
+  const value = useMemo(() => ({ play, muted }), [play, muted]);
 
-  return <AudioContext.Provider value={{ play, muted }}>{children}</AudioContext.Provider>;
+  return <AudioContext.Provider value={value}>{children}</AudioContext.Provider>;
 }

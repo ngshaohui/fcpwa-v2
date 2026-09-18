@@ -46,7 +46,6 @@ export interface UserSettings {
   autoplayAudio: boolean;
   showTransliteration: boolean;
   showEnglish: boolean;
-  includeNewItems: boolean;
 }
 
 export type AppState = "setup" | "quiz" | "settings" | "review";

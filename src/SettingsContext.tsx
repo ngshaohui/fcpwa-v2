@@ -1,25 +1,24 @@
 import { createContext, useContext, useReducer } from "react";
 import type { Dispatch, ReactNode } from "react";
 
-import type { AppState } from "@/common/types";
+import type { AppState, UserSettings } from "@/common/types";
+
+import { DEFAULT_USER_SETTINGS } from "./common/constants";
 
 type AppSettings = {
   appState: AppState;
-  muteAudio: boolean;
-  showTransliteration: boolean;
-  showEnglish: boolean;
+  config: UserSettings;
 };
 
 const DEFAULT_SETTINGS: AppSettings = {
   appState: "setup",
-  muteAudio: false,
-  showTransliteration: false,
-  showEnglish: false,
+  config: DEFAULT_USER_SETTINGS,
 };
 
 type Action =
   | { type: "SET_APP_STATE"; payload: AppState }
   | { type: "SET_MUTE_AUDIO"; payload: boolean }
+  | { type: "SET_AUTOPLAY_AUDIO"; payload: boolean }
   | { type: "SET_SHOW_TRANSLITERATION"; payload: boolean }
   | { type: "SET_SHOW_ENGLISH"; payload: boolean };
 
@@ -53,19 +52,37 @@ function settingsReducer(settings: AppSettings, action: Action) {
     case "SET_MUTE_AUDIO": {
       return {
         ...settings,
-        muteAudio: action.payload,
+        config: {
+          ...settings.config,
+          muteAudio: action.payload,
+        },
+      };
+    }
+    case "SET_AUTOPLAY_AUDIO": {
+      return {
+        ...settings,
+        config: {
+          ...settings.config,
+          autoplayAudio: action.payload,
+        },
       };
     }
     case "SET_SHOW_TRANSLITERATION": {
       return {
         ...settings,
-        showTransliteration: action.payload,
+        config: {
+          ...settings.config,
+          showTransliteration: action.payload,
+        },
       };
     }
     case "SET_SHOW_ENGLISH": {
       return {
         ...settings,
-        showEnglish: action.payload,
+        config: {
+          ...settings.config,
+          showEnglish: action.payload,
+        },
       };
     }
   }

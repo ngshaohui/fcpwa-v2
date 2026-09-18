@@ -36,7 +36,7 @@ function App() {
   }
 
   return (
-    <AudioProvider muted={settings.muteAudio}>
+    <AudioProvider muted={settings.config.muteAudio}>
       <div className={styles.container}>
         <Menubar />
         <div className={styles.contentWrapper}>

@@ -1,3 +1,5 @@
+import type { UserSettings } from "./types";
+
 export const DBName = "fcpwav2";
 
 export const StorageKeys = {
@@ -21,3 +23,10 @@ export const AppState = {
 
 export const MILLISECONDS_IN_HOUR = 60 * 60 * 1000;
 export const MILLISECONDS_IN_DAY = 24 * MILLISECONDS_IN_HOUR;
+
+export const DEFAULT_USER_SETTINGS: UserSettings = {
+  muteAudio: false,
+  autoplayAudio: false,
+  showTransliteration: false,
+  showEnglish: false,
+};

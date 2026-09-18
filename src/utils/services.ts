@@ -1,16 +1,8 @@
 import type { DBSchema } from "idb";
 import { openDB } from "idb";
 
-import { DBName, StorageKeys } from "@/common/constants";
+import { DBName, DEFAULT_USER_SETTINGS, StorageKeys } from "@/common/constants";
 import type { CourseItem, PracticeItem, UserSettings } from "@/common/types";
-
-const DEFAULT_USER_SETTINGS: UserSettings = {
-  muteAudio: false,
-  autoplayAudio: false,
-  showTransliteration: false,
-  showEnglish: false,
-  includeNewItems: true,
-};
 
 export interface IDBDB extends DBSchema {
   [StorageKeys.CourseItems]: {
