@@ -15,14 +15,15 @@ interface ShowSentenceProps {
 
 export function ShowSentence({ sentences }: ShowSentenceProps) {
   const [pos, setPos] = useState(0);
-  const { play } = useAudio();
+  const { play, stop } = useAudio();
   const settings = useSettings();
   const { text, translation, transliteration, audioUrl } = sentences[pos];
 
   useEffect(() => {
     if (!settings.config.autoplayAudio) return;
     play(audioUrl ?? "");
-  }, [settings.config.autoplayAudio, audioUrl, play]);
+    return () => stop();
+  }, [settings.config.autoplayAudio, audioUrl, play, stop]);
 
   function next() {
     setPos((prev) => (prev + 1) % sentences.length);

@@ -5,6 +5,7 @@ import { idbDB } from "@/utils/services"; // your db
 
 interface AudioContextValue {
   play: (id: string) => Promise<void>;
+  stop: () => void;
   muted: boolean;
 }
 
@@ -25,6 +26,11 @@ export function AudioProvider({ children, muted }: { children: React.ReactNode; 
     const el = audioRef.current!;
     el.muted = muted;
   }, [muted]);
+
+  const stop = useCallback(() => {
+    const el = audioRef.current!;
+    el.src = "";
+  }, []);
 
   const play = useCallback(
     async (id: string) => {
@@ -49,7 +55,7 @@ export function AudioProvider({ children, muted }: { children: React.ReactNode; 
     },
     [muted],
   );
-  const value = useMemo(() => ({ play, muted }), [play, muted]);
+  const value = useMemo(() => ({ play, stop, muted }), [play, stop, muted]);
 
   return <AudioContext.Provider value={value}>{children}</AudioContext.Provider>;
 }
