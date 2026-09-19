@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import { useSettings, useSettingsDispatch } from "@/SettingsContext";
 import {
   backupPracticeItems,
   checkHealth,
@@ -7,6 +8,7 @@ import {
   retryFetchAudio,
   syncPracticeItems,
 } from "@/utils/dataset";
+import { updateUserSettings } from "@/utils/services";
 
 import { StorageStats } from "./StorageStats";
 
@@ -17,6 +19,8 @@ const INPUT_DATASOURCE_NAME = "datasource";
 export function DataSource() {
   const [msg, setMsg] = useState("");
   const [url, setUrl] = useState("");
+  const settings = useSettings();
+  const settingsDispatch = useSettingsDispatch();
 
   // check if url is valid, set state if it is
   // other functionality to fetch and sync data is disabled if url is invalid
@@ -91,8 +95,86 @@ export function DataSource() {
 
   const isValidUrl = url !== "";
 
+  // TODO: can explore putting the updateUserSettings portion within the context itself
+  // use a useEffect to watch for changes and update accordingly
+  function toggleAutoplay() {
+    settingsDispatch({ type: "SET_AUTOPLAY_AUDIO", payload: !settings.config.autoplayAudio });
+    updateUserSettings({ ...settings.config, autoplayAudio: !settings.config.autoplayAudio });
+  }
+
+  function toggleMute() {
+    settingsDispatch({ type: "SET_MUTE_AUDIO", payload: !settings.config.muteAudio });
+    updateUserSettings({ ...settings.config, muteAudio: !settings.config.muteAudio });
+  }
+
+  function toggleShowTransliteration() {
+    settingsDispatch({
+      type: "SET_SHOW_TRANSLITERATION",
+      payload: !settings.config.showTransliteration,
+    });
+    updateUserSettings({
+      ...settings.config,
+      showTransliteration: !settings.config.showTransliteration,
+    });
+  }
+
+  function toggleShowTranslation() {
+    settingsDispatch({ type: "SET_SHOW_ENGLISH", payload: !settings.config.showEnglish });
+    updateUserSettings({ ...settings.config, showEnglish: !settings.config.showEnglish });
+  }
+
   return (
     <div className={styles.container}>
+      <h3>App settings</h3>
+      <table className={styles.appSettingsTable}>
+        <tbody>
+          <tr>
+            <td>
+              <label>Autoplay Audio</label>
+            </td>
+            <td>
+              <input
+                onChange={toggleAutoplay}
+                type="checkbox"
+                checked={settings.config.autoplayAudio}
+              />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label>Mute Audio</label>
+            </td>
+            <td>
+              <input onChange={toggleMute} type="checkbox" checked={settings.config.muteAudio} />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label>Show Transliteration</label>
+            </td>
+            <td>
+              <input
+                onChange={toggleShowTransliteration}
+                type="checkbox"
+                checked={settings.config.showTransliteration}
+              />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label>Show Translation</label>
+            </td>
+            <td>
+              <input
+                onChange={toggleShowTranslation}
+                type="checkbox"
+                checked={settings.config.showEnglish}
+              />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <h3>Data sources</h3>
       <form className={styles.form} method="get" onSubmit={handleSubmit}>
         <label className={styles.label}>
           Datasource URL

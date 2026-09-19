@@ -1,11 +1,16 @@
+import { useEffect, useState } from "react";
+
+import type { UserSettings } from "@/common/types";
 import { DataSource } from "@/components/Data";
 import { Menubar } from "@/components/Menubar";
 import { QuizMode } from "@/components/Quiz";
 import { Review } from "@/components/Review";
 import { QuizSetup } from "@/components/Setup";
 import { useSettings } from "@/SettingsContext";
+import { getUserSettings } from "@/utils/services";
 
 import { AudioProvider } from "./AudioContext";
+import { SettingsProvider } from "./SettingsContext";
 
 import styles from "./App.module.css";
 
@@ -13,7 +18,33 @@ function BottomSafeArea() {
   return <div className={styles.bottomSafeArea} />;
 }
 
+function AppSettingsWrapper({ children }: { children: React.ReactNode }) {
+  const [userSettings, setUserSettings] = useState<UserSettings | null>(null);
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      setUserSettings(await getUserSettings());
+    };
+
+    fetchSettings();
+  }, []);
+
+  if (!userSettings) {
+    return <p>Loading</p>;
+  }
+
+  return <SettingsProvider savedSettings={userSettings}>{children}</SettingsProvider>;
+}
+
 function App() {
+  return (
+    <AppSettingsWrapper>
+      <AppContent />
+    </AppSettingsWrapper>
+  );
+}
+
+function AppContent() {
   const settings = useSettings();
 
   let content: React.JSX.Element;

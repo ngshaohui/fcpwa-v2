@@ -22,15 +22,19 @@ type Action =
   | { type: "SET_SHOW_TRANSLITERATION"; payload: boolean }
   | { type: "SET_SHOW_ENGLISH"; payload: boolean };
 
-const SettingsContext = createContext<AppSettings>(DEFAULT_SETTINGS);
+const SettingsContext = createContext<AppSettings | null>(null);
 const SettingsDispatchContext = createContext<Dispatch<Action> | null>(null);
 
 interface SettingsProviderProps {
   children: ReactNode;
+  savedSettings: UserSettings;
 }
 
-export function SettingsProvider({ children }: SettingsProviderProps) {
-  const [settings, dispatch] = useReducer(settingsReducer, DEFAULT_SETTINGS);
+export function SettingsProvider({ children, savedSettings }: SettingsProviderProps) {
+  const [settings, dispatch] = useReducer(settingsReducer, {
+    ...DEFAULT_SETTINGS,
+    config: savedSettings,
+  });
 
   return (
     <SettingsContext.Provider value={settings}>
@@ -89,7 +93,12 @@ function settingsReducer(settings: AppSettings, action: Action) {
 }
 
 export function useSettings() {
-  return useContext(SettingsContext);
+  const settings = useContext(SettingsContext);
+
+  if (settings === null) {
+    throw new Error("useSettings must be used within a SettingsProvider");
+  }
+  return settings;
 }
 
 export function useSettingsDispatch() {
