@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 import { IDB_BOOL } from "@/common/constants";
-import type { CourseItem, QuizItem } from "@/common/types";
+import type { QuizItem } from "@/common/types";
 import { getQuizItems, modifyEaseFactor, toggleActive } from "@/utils/review";
 
 import ReviewCard from "./ReviewCard";
@@ -92,7 +92,7 @@ export function Review() {
   const [sortState, setSortState] = useState<SortState>(DEFAULT_SORT);
   const [visibleColumns, setVisibleColumns] = useState<Set<OptionalColumn>>(new Set());
   const [canActivate, setCanActivate] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<null | CourseItem>(null);
+  const [selectedItemIdx, setSelectedItemIdx] = useState<null | number>(null);
   const hasPopulated = useRef(false);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -197,7 +197,16 @@ export function Review() {
   return (
     <div className={styles.container}>
       {createPortal(
-        <ReviewCard onClose={() => setSelectedItem(null)} courseItem={selectedItem} />,
+        <ReviewCard
+          onClose={() => setSelectedItemIdx(null)}
+          before={() => setSelectedItemIdx((idx) => (idx === null ? null : Math.max(0, idx - 1)))}
+          after={() =>
+            setSelectedItemIdx((idx) =>
+              idx === null ? null : Math.min(idx + 1, sortedItems.length - 1),
+            )
+          }
+          courseItem={selectedItemIdx === null ? null : sortedItems[selectedItemIdx].courseItem}
+        />,
         document.body,
       )}
       <div className={styles.toggles}>
@@ -282,9 +291,9 @@ export function Review() {
             </tr>
           </thead>
           <tbody>
-            {sortedItems.map((item) => (
+            {sortedItems.map((item, idx) => (
               <tr key={item.courseItem.id}>
-                <td onClick={() => setSelectedItem(item.courseItem)}>{item.courseItem.cue.text}</td>
+                <td onClick={() => setSelectedItemIdx(idx)}>{item.courseItem.cue.text}</td>
                 {showTransliteration && <td>{item.courseItem.cue.transliteration ?? ""}</td>}
                 {showTranslation && <td>{item.courseItem.cue.translation}</td>}
                 <td className={styles.activeToggle} onClick={() => handleToggleActive(item)}>

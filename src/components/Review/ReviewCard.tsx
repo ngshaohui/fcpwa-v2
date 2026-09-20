@@ -8,9 +8,11 @@ import styles from "./ReviewCard.module.css";
 interface ReviewCardProps {
   courseItem: CourseItem | null;
   onClose: () => void;
+  before: () => void | null;
+  after: () => void | null;
 }
 
-export default function ReviewCard({ courseItem, onClose }: ReviewCardProps) {
+export default function ReviewCard({ courseItem, onClose, before, after }: ReviewCardProps) {
   if (courseItem === null) {
     return <></>;
   }
@@ -19,7 +21,15 @@ export default function ReviewCard({ courseItem, onClose }: ReviewCardProps) {
       <div className={styles.itemsContainer}>
         <ShowCue cue={courseItem.cue} />
         <ShowSentence sentences={courseItem.sentences} />
-        <button onClick={onClose}>Close</button>
+        <div>
+          <button disabled={before === null} onClick={before}>
+            &#60;
+          </button>
+          <button onClick={onClose}>Close</button>
+          <button disabled={before === null} onClick={after}>
+            &#62;
+          </button>
+        </div>
       </div>
     </div>
   );
