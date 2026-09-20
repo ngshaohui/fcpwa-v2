@@ -27,6 +27,6 @@ export const MILLISECONDS_IN_DAY = 24 * MILLISECONDS_IN_HOUR;
 export const DEFAULT_USER_SETTINGS: UserSettings = {
   muteAudio: false,
   autoplayAudio: false,
-  showTransliteration: false,
-  showEnglish: false,
+  showTransliteration: true,
+  showEnglish: true,
 };

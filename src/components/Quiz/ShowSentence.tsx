@@ -53,8 +53,10 @@ export function ShowSentence({ sentences }: ShowSentenceProps) {
     <div onClick={handleOverlayClick} className={styles.overlayWrapper}>
       <div className={styles.container}>
         <p className={styles.text}>{text}</p>
-        <p className={styles.transliteration}>{transliteration}</p>
-        <p className={styles.translation}>{translation}</p>
+        {settings.config.showTransliteration ? (
+          <p className={styles.transliteration}>{transliteration}</p>
+        ) : null}
+        {settings.config.showEnglish ? <p className={styles.translation}>{translation}</p> : null}
       </div>
     </div>
   );
