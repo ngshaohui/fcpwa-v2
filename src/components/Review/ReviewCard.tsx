@@ -8,8 +8,8 @@ import styles from "./ReviewCard.module.css";
 interface ReviewCardProps {
   courseItem: CourseItem | null;
   onClose: () => void;
-  before: () => void | null;
-  after: () => void | null;
+  before: () => void;
+  after: () => void;
 }
 
 export default function ReviewCard({ courseItem, onClose, before, after }: ReviewCardProps) {
@@ -21,14 +21,10 @@ export default function ReviewCard({ courseItem, onClose, before, after }: Revie
       <div className={styles.itemsContainer}>
         <ShowCue cue={courseItem.cue} />
         <ShowSentence sentences={courseItem.sentences} />
-        <div>
-          <button disabled={before === null} onClick={before}>
-            &#60;
-          </button>
+        <div className={styles.actions}>
+          <button onClick={before}>&#60;</button>
           <button onClick={onClose}>Close</button>
-          <button disabled={before === null} onClick={after}>
-            &#62;
-          </button>
+          <button onClick={after}>&#62;</button>
         </div>
       </div>
     </div>
